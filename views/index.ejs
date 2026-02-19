@@ -1,38 +1,40 @@
-<div class="d-flex justify-content-between align-items-center text-white p-3 flex-wrap">
+<div class="d-flex flex-wrap justify-content-between align-items-center text-white p-3 gap-2  ">
 
- 
-  <form action="/weather" method="GET" class="row g-2 mb-4">
-    <div class="col-md-6">
+  <!-- Search Form -->
+  <form action="/weather" method="GET" class="row g-2 flex-grow-1 mb-2 mb-md-0">
+    <div class="col-12 col-md-6  ">
       <input type="text" name="city" class="form-control" placeholder="Enter city name..." required>
     </div>
-    <div class="col-md-4">
+    <div class="col-12 col-md-4">
       <button class="btn btn-primary w-100">Search</button>
     </div>
   </form>
 
- 
-  <button class="btn btn-success mb-3" onclick="getLocation()">
-    📍 Use My Location
-  </button>
+  <!-- Use Location Button -->
+  <div class="col-12 col-md-auto">
+    <button class="btn btn-success w-100" onclick="getLocation()">
+      📍 Use My Location
+    </button>
+  </div>
 
 </div>
 <hr>
 
 <% if (weather) { %>
-<h4> <%= city %> 7-Day Forecast</h4>
+<h4><%= city %> 7-Day Forecast</h4>
 
-<div class="row weather-grid">
+<div class=" row p-3 gap-5 justify-content-center justify-content-md-between">
   <% weather.time.forEach((day, index) => { 
        let code = 0;  
        if (weather.daily && Array.isArray(weather.daily.weathercode) && weather.daily.weathercode[index] != null) {
            code = weather.daily.weathercode[index];
        }
   %>
-    <div class="weather-card" data-code="<%= codes[index] %>">
+    <div class="col-12 col-sm-6  col-md-4 col-lg-3      text-center  bg-danger text-white rounded" data-code="<%= codes[index] %>">
       <h6><%= day %></h6>
       <i id="jiu-<%= index %>" class="wi" data-code="<%= codes[index] %>"></i>
-      <span class="weather-text" id="text-<%= index %>"></span>
-      <p>🌡 <%= weather.temperature_2m_min[index] %>° - <%= weather.temperature_2m_max[index] %>°</p>
+      <span class="weather-text d-block " id="text-<%= index %>"></span>
+      <p class="mt-2">🌡 <%= weather.temperature_2m_min[index] %>° - <%= weather.temperature_2m_max[index] %>°</p>
     </div>
   <% }) %>
 </div>
@@ -42,7 +44,7 @@
 
 <script>
 document.querySelectorAll("i.wi").forEach(iconEl => {
-  const code = parseInt(iconEl.dataset.code); // get data-code
+  const code = parseInt(iconEl.dataset.code);
   const { icon, text } = weatherCodeToIconAndText(code);
 
   iconEl.className = `wi ${icon}`;
@@ -58,7 +60,7 @@ document.querySelectorAll("i.wi").forEach(iconEl => {
 <hr>
 <h4 class="mt-4">🌡 7-Day Temperature Trend</h4>
 
-<canvas id="tempChart"></canvas>
+<canvas id="tempChart" class="w-100" style="max-width:100%;"></canvas>
 
 <script>
   const labels = <%- JSON.stringify(weather.time) %>;
@@ -90,25 +92,17 @@ document.querySelectorAll("i.wi").forEach(iconEl => {
     },
     options: {
       responsive: true,
-      plugins: {
-        legend: { position: "top" }
-      },
-      scales: {
-        y: { beginAtZero: false }
-      }
+      plugins: { legend: { position: "top" } },
+      scales: { y: { beginAtZero: false } }
     }
   });
 </script>
 <% } %>
 
-
-
-
-
 <script>
 function getLocation() {
   if (!navigator.geolocation) {
-    alert("浏览器不支持定位！");
+    alert("Your browser does not support geolocation!");
     return;
   }
 
@@ -116,18 +110,12 @@ function getLocation() {
     function(position) {
       const lat = position.coords.latitude;
       const lon = position.coords.longitude;
-
-      // 浏览器直接跳转到后端路由
       window.location.href = `/weatherByLocation?lat=${lat}&lon=${lon}`;
     },
     function(error) {
-      console.error("用户拒绝定位或定位失败", error);
-      alert("无法获取位置");
+      console.error("User denied geolocation or it failed", error);
+      alert("Unable to retrieve location");
     }
   );
 }
 </script>
-
-
-
-
