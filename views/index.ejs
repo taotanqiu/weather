@@ -30,7 +30,7 @@
            code = weather.daily.weathercode[index];
        }
   %>
-    <div class="col-12 col-sm-6  col-md-4 col-lg-3      text-center  bg-danger text-white rounded" data-code="<%= codes[index] %>">
+    <div class="col-12 col-sm-6  col-md-4 col-lg-3      text-center  bg-info text-black rounded" data-code="<%= codes[index] %>">
       <h6><%= day %></h6>
       <i id="jiu-<%= index %>" class="wi" data-code="<%= codes[index] %>"></i>
       <span class="weather-text d-block " id="text-<%= index %>"></span>
@@ -51,7 +51,7 @@ document.querySelectorAll("i.wi").forEach(iconEl => {
   const textEl = document.getElementById("text-" + iconEl.id.split("-")[1]);
   if (textEl) {
     textEl.textContent = text;
-    textEl.style.color = "red";
+    textEl.style.color = "black";
   }
 });
 </script>
