@@ -1,0 +1,51 @@
+/* =============================
+   7天预报 Grid
+============================= */
+.weather-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 15px;
+  justify-items: center;
+  margin-bottom: 20px;
+
+}
+
+.weather-card {
+  background: rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 12px;
+  text-align: center;
+  display: grid;
+  grid-template-rows: auto 60px auto auto;
+  align-items: center;
+  justify-items: center;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  transition: transform 0.2s;
+}
+
+.weather-card:hover {
+  transform: translateY(-5px);
+}
+
+.weather-card i.wi {
+  font-size: 48px;
+  margin: 8px 0;
+}
+
+.weather-card .weather-text {
+  color: red;
+  font-size: 0.9rem;
+  margin-bottom: 6px;
+}
+
+.weather-card p {
+  margin: 4px 0;
+  font-size: 0.9rem;
+}
+
+/* 响应式优化 */
+@media (max-width: 576px) {
+  .weather-grid {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  }
+}

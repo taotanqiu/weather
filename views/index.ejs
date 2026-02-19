@@ -1,0 +1,133 @@
+<div class="d-flex justify-content-between align-items-center text-white p-3 flex-wrap">
+
+ 
+  <form action="/weather" method="GET" class="row g-2 mb-4">
+    <div class="col-md-6">
+      <input type="text" name="city" class="form-control" placeholder="Enter city name..." required>
+    </div>
+    <div class="col-md-4">
+      <button class="btn btn-primary w-100">Search</button>
+    </div>
+  </form>
+
+ 
+  <button class="btn btn-success mb-3" onclick="getLocation()">
+    📍 Use My Location
+  </button>
+
+</div>
+<hr>
+
+<% if (weather) { %>
+<h4> <%= city %> 7-Day Forecast</h4>
+
+<div class="row weather-grid">
+  <% weather.time.forEach((day, index) => { 
+       let code = 0;  
+       if (weather.daily && Array.isArray(weather.daily.weathercode) && weather.daily.weathercode[index] != null) {
+           code = weather.daily.weathercode[index];
+       }
+  %>
+    <div class="weather-card" data-code="<%= codes[index] %>">
+      <h6><%= day %></h6>
+      <i id="jiu-<%= index %>" class="wi" data-code="<%= codes[index] %>"></i>
+      <span class="weather-text" id="text-<%= index %>"></span>
+      <p>🌡 <%= weather.temperature_2m_min[index] %>° - <%= weather.temperature_2m_max[index] %>°</p>
+    </div>
+  <% }) %>
+</div>
+<% } %>
+
+<script src="/weather/javascript/weatherCodeToIcon.js"></script>
+
+<script>
+document.querySelectorAll("i.wi").forEach(iconEl => {
+  const code = parseInt(iconEl.dataset.code); // get data-code
+  const { icon, text } = weatherCodeToIconAndText(code);
+
+  iconEl.className = `wi ${icon}`;
+  const textEl = document.getElementById("text-" + iconEl.id.split("-")[1]);
+  if (textEl) {
+    textEl.textContent = text;
+    textEl.style.color = "red";
+  }
+});
+</script>
+
+<% if (weather) { %>
+<hr>
+<h4 class="mt-4">🌡 7-Day Temperature Trend</h4>
+
+<canvas id="tempChart"></canvas>
+
+<script>
+  const labels = <%- JSON.stringify(weather.time) %>;
+  const maxTemps = <%- JSON.stringify(weather.temperature_2m_max) %>;
+  const minTemps = <%- JSON.stringify(weather.temperature_2m_min) %>;
+
+  const ctx = document.getElementById("tempChart").getContext("2d");
+
+  new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: "Max Temp",
+          data: maxTemps,
+          borderColor: "red",
+          backgroundColor: "rgba(255,0,0,0.2)",
+          tension: 0.4
+        },
+        {
+          label: "Min Temp",
+          data: minTemps,
+          borderColor: "blue",
+          backgroundColor: "rgba(0,0,255,0.2)",
+          tension: 0.4
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: "top" }
+      },
+      scales: {
+        y: { beginAtZero: false }
+      }
+    }
+  });
+</script>
+<% } %>
+
+
+
+
+
+<script>
+function getLocation() {
+  if (!navigator.geolocation) {
+    alert("浏览器不支持定位！");
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    function(position) {
+      const lat = position.coords.latitude;
+      const lon = position.coords.longitude;
+
+      // 浏览器直接跳转到后端路由
+      window.location.href = `/weatherByLocation?lat=${lat}&lon=${lon}`;
+    },
+    function(error) {
+      console.error("用户拒绝定位或定位失败", error);
+      alert("无法获取位置");
+    }
+  );
+}
+</script>
+
+
+
+
