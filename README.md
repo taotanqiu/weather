@@ -1,9 +1,3 @@
-Live Demo
-
-🔗 https://weather-pbi1.onrender.com
----
-
-
 
 Dependencies
 
